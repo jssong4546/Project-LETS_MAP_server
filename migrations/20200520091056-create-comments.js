@@ -6,28 +6,26 @@ module.exports = {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
       },
       text: {
-        type: Sequelize.STRING
-      },
-      userid: {
-        type: Sequelize.INTEGER
-      },
-      marketid: {
-        type: Sequelize.INTEGER
+        type: Sequelize.STRING,
       },
       createdAt: {
         allowNull: false,
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
       },
       updatedAt: {
         allowNull: false,
-        type: Sequelize.DATE
-      }
+        type: Sequelize.DATE,
+      },
     });
   },
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('comments');
-  }
+    return [
+      queryInterface.removeColumn('comments', 'userid'),
+      queryInterface.removeColumn('comments', 'marketid'),
+      queryInterface.dropTable('comments'),
+    ];
+  },
 };

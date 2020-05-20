@@ -4,16 +4,18 @@ module.exports = (sequelize, DataTypes) => {
     'comments',
     {
       text: DataTypes.STRING,
-      userid: DataTypes.INTEGER,
-      marketid: DataTypes.INTEGER,
     },
     {},
   );
   comments.associate = function (models) {
     // associations can be defined here
     let { users, markets } = models;
-    comments.belongsTo(users);
-    comments.belongsTo(markets);
+    comments.belongsTo(users, {
+      foreignKey: 'userid',
+    });
+    comments.belongsTo(markets, {
+      foreignKey: 'marketid',
+    });
   };
   return comments;
 };
