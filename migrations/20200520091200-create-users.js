@@ -25,10 +25,6 @@ module.exports = {
     });
   },
   down: (queryInterface, Sequelize) => {
-    return [
-      queryInterface.removeColumn('comments', 'userid'),
-      queryInterface.removeColumn('comments', 'marketid'),
-      queryInterface.dropTable('users'),
-    ];
+    return queryInterface.dropTable('users');
   },
 };
