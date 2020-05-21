@@ -25,15 +25,18 @@ module.exports = {
               expiresIn: '1m',
             },
           );
-          return res.cookie('w_auth', token).status(200).json({
+          req.headers.authorization = token;
+          return res.status(200).json({
             lcode: 200,
             message: 'jwt 발급',
+            token: token,
           });
         } else {
           res.status(404).send('Invalid User');
         }
       })
       .catch((err) => {
+        console.error(err);
         res.status(404).send(err);
       });
   },
@@ -59,8 +62,13 @@ module.exports = {
       });
   },
   logOutController: (req, res) => {
-    delete req.cookies.w_auth;
-    res.status(200).send('Log Out');
+    let token = req.headers.authorization;
+    if (token) {
+      req.headers.authorization = '';
+      res.status(200).send('Log Out');
+    } else {
+      res.status(204).send('already delete token log out');
+    }
   },
   findAddressController: async (req, res) => {
     const { address } = req.body;
