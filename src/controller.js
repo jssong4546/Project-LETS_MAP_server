@@ -47,6 +47,7 @@ module.exports = {
       .findOne({ where: { userid } })
       .then((data) => {
         if (data) {
+          console.log(data);
           res.status(409).send('User Id Exists');
         } else {
           users.create(req.body).then((data) => {
@@ -58,6 +59,7 @@ module.exports = {
         }
       })
       .catch((err) => {
+        console.log('Enter err');
         res.status(409).send(err);
       });
   },
