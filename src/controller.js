@@ -1,4 +1,4 @@
-const { users, markets, favorite_markets, comments } = require('./models');
+const { users, markets, favorite_markets, comments } = require('./db/models');
 const axios = require('axios');
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
