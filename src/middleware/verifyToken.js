@@ -3,7 +3,7 @@ require('dotenv').config();
 
 exports.verifyToken = (req, res, next) => {
   console.dir(req.headers.authorization);
-  let token = req.cookies.w_auth;
+  let token = req.headers.authorization;
   try {
     req.decoded = jwt.verify(token, process.env.JWT_PASSWORD);
     console.log(req.decoded);
