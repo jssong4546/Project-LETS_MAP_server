@@ -14,6 +14,8 @@ router.post('/signup', userController.signup.post);
 
 router.get('/findAddress', marketController.findAddress.get);
 
+router.get('/filteringMarket', marketController.filteringMarket.get);
+
 router.get('/', marketController.findAddress.get);
 
 // app.get('/', findAddressController);
