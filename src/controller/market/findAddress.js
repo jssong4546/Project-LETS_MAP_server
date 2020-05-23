@@ -1,69 +1,30 @@
-const {
-  users,
-  markets,
-  favorite_markets,
-  comments,
-} = require('../../db/models');
-const axios = require('axios');
-const jwt = require('jsonwebtoken');
-require('dotenv').config();
+const getMarketAPI = require('../../util/getMarketAPI');
 module.exports = {
   get: async (req, res) => {
     const { address } = req.body;
     let result = [];
-    //도로명주소
-    let roadNumber = await axios
-      .get(
-        `https://openapi.gg.go.kr/RegionMnyFacltStus?Type=json&KEY=${
-          process.env.KEY
-        }&REFINE_ROADNM_ADDR=${encodeURI(address)}`,
-      )
-      .then((val) => {
-        if (val.data['RegionMnyFacltStus']) {
-          return val.data['RegionMnyFacltStus'][1]['row'];
-        } else {
-          return null;
-        }
-      });
-    //지번주소
-    let lotNumber = await axios
-      .get(
-        `https://openapi.gg.go.kr/RegionMnyFacltStus?Type=json&KEY=${
-          process.env.KEY
-        }&REFINE_LOTNO_ADDR=${encodeURI(address)}`,
-      )
-      .then((val) => {
-        if (val.data['RegionMnyFacltStus']) {
-          return val.data['RegionMnyFacltStus'][1]['row'];
-        } else {
-          return null;
-        }
-      });
-    //상호명
-    let tradeName = await axios
-      .get(
-        `https://openapi.gg.go.kr/RegionMnyFacltStus?Type=json&KEY=${
-          process.env.KEY
-        }&CMPNM_NM=${encodeURI(address)}`,
-      )
-      .then((val) => {
-        if (val.data['RegionMnyFacltStus']) {
-          return val.data['RegionMnyFacltStus'][1]['row'];
-        } else {
-          return null;
-        }
-      });
-    if (roadNumber) {
-      result = result.concat(roadNumber, tradeName);
-    } else if (lotNumber) {
-      result = result.concat(lotNumber, tradeName);
+
+    // * 경기도 api로 부터 도로명 주소 마켓 받아온다
+    let roadNumber = await getMarketAPI.api('REFINE_ROADNM_ADDR', address);
+
+    // * 도로명이 존재하면 지번주소 마켓은 생략한다
+    if (roadNumber.length > 1) {
+      result = roadNumber;
     } else {
-      result = result.concat(tradeName);
+      let lotNumber = await getMarketAPI.api('REFINE_LOTNO_ADDR', address);
+      result = lotNumber;
     }
+
+    // * 경기도 api로 부터 상호명 주소 마켓 받아온다
+    let tradeName = await getMarketAPI.api('CMPNM_NM', address);
+
+    // * 상호명 마켓과 주소 마켓을 합치고 클라이언트로 응답을 보낸다
+    result = result.concat(tradeName);
     if (result) {
       res.status(200).send({ addressList: result });
     } else {
       res.status(404).send('Not Found');
     }
+    return;
   },
 };

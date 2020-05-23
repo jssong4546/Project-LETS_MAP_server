@@ -7,45 +7,27 @@ const {
 const axios = require('axios');
 const jwt = require('jsonwebtoken');
 const indutypeFilter = require('../../util/indutypeChecker');
+const getMarketAPI = require('../../util/getMarketAPI');
 
 require('dotenv').config();
 module.exports = {
   get: async (req, res) => {
     const { address, indutype } = req.body;
-    //도로명주소
-    let roadNumber = await axios
-      .get(
-        `https://openapi.gg.go.kr/RegionMnyFacltStus?Type=json&KEY=${
-          process.env.KEY
-        }&REFINE_ROADNM_ADDR=${encodeURI(address)}`,
-      )
-      .then((val) => {
-        if (val.data['RegionMnyFacltStus']) {
-          return val.data['RegionMnyFacltStus'][1]['row'];
-        } else {
-          return null;
-        }
-      });
-    //지번주소
-    let lotNumber = await axios
-      .get(
-        `https://openapi.gg.go.kr/RegionMnyFacltStus?Type=json&KEY=${
-          process.env.KEY
-        }&REFINE_LOTNO_ADDR=${encodeURI(address)}`,
-      )
-      .then((val) => {
-        if (val.data['RegionMnyFacltStus']) {
-          return val.data['RegionMnyFacltStus'][1]['row'];
-        } else {
-          return null;
-        }
-      });
+    let result = [];
 
-    let marketList = roadNumber || lotNumber;
+    // * 경기도 api로 부터 도로명 주소 마켓 받아온다
+    let roadNumber = await getMarketAPI.api('REFINE_ROADNM_ADDR', address);
 
-    let result = indutypeFilter.get(marketList, indutype);
+    // * 도로명이 존재하면 지번주소 마켓은 생략한다
+    if (roadNumber.length > 1) {
+      // * 필터함수를 호출하여 필터링 된 값을 저장한다
+      result = indutypeFilter.get(roadNumber, indutype);
+    } else {
+      let lotNumber = await getMarketAPI.api('REFINE_LOTNO_ADDR', address);
+      result = indutypeFilter.get(roadNumber, indutype);
+    }
+
     result = result.filter((ele) => ele !== undefined);
-    console.dir(result);
     if (result) {
       res.status(200).send({ addressList: result });
     } else {
