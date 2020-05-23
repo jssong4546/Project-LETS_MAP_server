@@ -6,11 +6,12 @@ const {
 } = require('../../db/models');
 const axios = require('axios');
 const jwt = require('jsonwebtoken');
+const indutypeFilter = require('../../util/indutypeChecker');
+
 require('dotenv').config();
 module.exports = {
   get: async (req, res) => {
-    const { address } = req.body;
-    let result = [];
+    const { address, indutype } = req.body;
     //도로명주소
     let roadNumber = await axios
       .get(
@@ -39,27 +40,12 @@ module.exports = {
           return null;
         }
       });
-    //상호명
-    let tradeName = await axios
-      .get(
-        `https://openapi.gg.go.kr/RegionMnyFacltStus?Type=json&KEY=${
-          process.env.KEY
-        }&CMPNM_NM=${encodeURI(address)}`,
-      )
-      .then((val) => {
-        if (val.data['RegionMnyFacltStus']) {
-          return val.data['RegionMnyFacltStus'][1]['row'];
-        } else {
-          return null;
-        }
-      });
-    if (roadNumber) {
-      result = result.concat(roadNumber, tradeName);
-    } else if (lotNumber) {
-      result = result.concat(lotNumber, tradeName);
-    } else {
-      result = result.concat(tradeName);
-    }
+
+    let marketList = roadNumber || lotNumber;
+
+    let result = indutypeFilter.get(marketList, indutype);
+    result = result.filter((ele) => ele !== undefined);
+    console.dir(result);
     if (result) {
       res.status(200).send({ addressList: result });
     } else {
