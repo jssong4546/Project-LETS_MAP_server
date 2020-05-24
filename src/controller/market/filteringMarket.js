@@ -24,7 +24,7 @@ module.exports = {
       result = indutypeFilter.get(roadNumber, indutype);
     } else {
       let lotNumber = await getMarketAPI.api('REFINE_LOTNO_ADDR', address);
-      result = indutypeFilter.get(roadNumber, indutype);
+      result = indutypeFilter.get(lotNumber, indutype);
     }
 
     result = result.filter((ele) => ele !== undefined);
