@@ -31,6 +31,11 @@ router.get('/review', reviewController.review.get);
 // * POST /review
 router.post('/review', reviewController.review.post);
 
+// * POST /review
+router.delete('/review', reviewController.review.delete);
+
+router.put('/review', reviewController.review.put);
+
 // app.get('/user/favorites');
 // app.post('/user/favorites');
 
