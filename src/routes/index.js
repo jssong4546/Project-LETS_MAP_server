@@ -1,32 +1,42 @@
 const express = require('express');
 const router = express.Router();
 const verifyToken = require('../middleware/verifyToken');
-const { userController, marketController } = require('../controller');
+const {
+  userController,
+  marketController,
+  reviewController,
+} = require('../controller');
 
-// * POST /user/signin
+// * POST /signin
 router.post('/signin', userController.signin.post);
 
-// * POST /user/signout
+// * POST /signout
 router.post('/signout', userController.signout.post);
 
-// * POST /user/signup
+// * POST /signup
 router.post('/signup', userController.signup.post);
 
+// * GET /findAddress
 router.get('/findAddress', marketController.findAddress.get);
 
-router.get('/filteringMarket', marketController.filteringMarket.get);
-
+// * GET /
 router.get('/', marketController.findAddress.get);
 
-// app.get('/', findAddressController);
-// app.get('/findAddress', findAddressController);
-// app.get('/review');
-// app.get('/user/favorites');
+// * GET /filteringMarket
+router.get('/filteringMarket', marketController.filteringMarket.get);
 
-// app.post('/signin', signInController);
-// app.post('/signup', signUpController);
-// app.post('/logout', logOutController);
-// app.post('/review');
+// * GET /review
+router.get('/review', reviewController.review.get);
+
+// * POST /review
+router.post('/review', reviewController.review.post);
+
+// * POST /review
+router.delete('/review', reviewController.review.delete);
+
+router.put('/review', reviewController.review.put);
+
+// app.get('/user/favorites');
 // app.post('/user/favorites');
 
 module.exports = router;
