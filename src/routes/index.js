@@ -18,7 +18,7 @@ router.post('/signout', userController.signout.post);
 router.post('/signup', userController.signup.post);
 
 // * GET /findAddress
-router.get('/findAddress', marketController.findAddress.get);
+router.post('/findAddress', marketController.findAddress.get);
 
 // * GET /
 router.get('/', marketController.findAddress.get);

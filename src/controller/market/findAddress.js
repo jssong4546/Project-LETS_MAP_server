@@ -21,6 +21,7 @@ module.exports = {
     // * 상호명 마켓과 주소 마켓을 합치고 클라이언트로 응답을 보낸다
     result = result.concat(tradeName);
     if (result) {
+      console.log(req.body);
       res.status(200).send({ addressList: result });
     } else {
       res.status(404).send('Not Found');
