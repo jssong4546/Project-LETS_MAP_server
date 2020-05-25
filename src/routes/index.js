@@ -5,6 +5,7 @@ const {
   userController,
   marketController,
   reviewController,
+  favoritesController,
 } = require('../controller');
 
 // * POST /signin
@@ -31,12 +32,15 @@ router.get('/review', reviewController.review.get);
 // * POST /review
 router.post('/review', reviewController.review.post);
 
-// * POST /review
+// * DELET /review
 router.delete('/review', reviewController.review.delete);
 
+// * PUT /review
 router.put('/review', reviewController.review.put);
 
-// app.get('/user/favorites');
-// app.post('/user/favorites');
+// * GET /favorites
+router.get('/favorites', favoritesController.favorites.get);
+// * POST /favorites
+router.post('/favorites', favoritesController.favorites.post);
 
 module.exports = router;
